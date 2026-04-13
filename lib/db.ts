@@ -18,6 +18,36 @@ export function getDb(): Database.Database {
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
       )
     `)
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS scholarships (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        provider TEXT NOT NULL,
+        description TEXT NOT NULL,
+        eligibility TEXT NOT NULL,
+        amount TEXT NOT NULL,
+        deadline TEXT NOT NULL,
+        website TEXT NOT NULL,
+        education_level TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      )
+    `)
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS pending_scholarships (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        provider TEXT NOT NULL,
+        description TEXT NOT NULL,
+        eligibility TEXT NOT NULL,
+        amount TEXT NOT NULL,
+        deadline TEXT NOT NULL,
+        website TEXT NOT NULL,
+        education_level TEXT NOT NULL,
+        source_url TEXT,
+        scraped_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        status TEXT DEFAULT 'pending'
+      )
+    `)
   }
   return db
 }

@@ -1,7 +1,10 @@
 import Link from 'next/link'
 import { signOut } from '@/auth'
+import { getPendingCount } from '@/lib/admin_pending'
 
 export default async function AdminDashboard() {
+  const pendingCount = getPendingCount()
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
@@ -24,6 +27,15 @@ export default async function AdminDashboard() {
           <Link href="/admin/scholarships/new" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition">
             <h2 className="text-lg font-semibold mb-2">Add New Scholarship</h2>
             <p className="text-gray-600">Add a new scholarship to the database</p>
+          </Link>
+          <Link href="/admin/pending" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition relative">
+            <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
+              Pending Approvals
+              {pendingCount > 0 && (
+                <span className="bg-coral text-white text-xs px-2 py-0.5 rounded-full">{pendingCount}</span>
+              )}
+            </h2>
+            <p className="text-gray-600">Review scraped scholarships from government portals</p>
           </Link>
         </div>
       </main>
