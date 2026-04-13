@@ -36,6 +36,9 @@ npx tsx scripts/seed_admin.ts  # Create admin user after database setup
 - `lib/utils.ts` - Client-safe utility functions (education level labels, date formatting)
 - `lib/auth_admins.ts` - Admin authentication (server-only)
 - `lib/admin_scholarships.ts` - Admin CRUD operations (server-only)
+- `lib/admin_pending.ts` - Pending scholarship CRUD for auto-fetch feature
+- `lib/scrapers/gov.ts` - Government portal scraper module
+- `lib/scrapers/scrape-manager.ts` - Scraping coordinator with deduplication
 - `auth.ts` - NextAuth.js configuration
 - `auth.d.ts` - NextAuth TypeScript type extensions
 - `middleware.ts` - Route protection for `/admin/*` routes
@@ -45,13 +48,20 @@ npx tsx scripts/seed_admin.ts  # Create admin user after database setup
 - `app/api/auth/[...nextauth]/route.ts` - NextAuth.js handler (must use `runtime = 'nodejs'`)
 - `app/api/admin/scholarships/route.ts` - Admin: GET all, POST create
 - `app/api/admin/scholarships/[id]/route.ts` - Admin: GET, PUT, DELETE single
+- `app/api/admin/scrape/route.ts` - Admin: Trigger scholarship scraping
+- `app/api/admin/pending/route.ts` - Admin: List pending scholarships
+- `app/api/admin/pending/[id]/approve/route.ts` - Admin: Approve pending
+- `app/api/admin/pending/[id]/reject/route.ts` - Admin: Reject pending
+- `app/api/cron/scrape/route.ts` - Cron: Auto-scrape endpoint
 - `app/auth/error/page.tsx` - Authentication error page (with Suspense boundary)
+- `app/admin/pending/page.tsx` - Admin: Pending approvals UI
 
 ### Database
 
 - SQLite stored at `data/scholarships.db`
 - Seeded via `scripts/seed.ts` which inserts 20 sample scholarships across 6 education levels
 - Schema: `id`, `name`, `provider`, `description`, `eligibility`, `amount`, `deadline`, `website`, `education_level`, `created_at`
+- `pending_scholarships` table: stores scraped scholarships awaiting admin approval
 
 ### Education Levels
 
@@ -74,11 +84,12 @@ Designed for Vercel deployment. The `data/` directory is gitignored - run `npm r
 ### Admin Routes
 
 - `/admin/login` - Login page
-- `/admin` - Admin dashboard
+- `/admin` - Admin dashboard (shows pending approval count)
 - `/admin/scholarships` - Manage scholarships (list view)
 - `/admin/scholarships/new` - Create new scholarship
 - `/admin/scholarships/[id]` - View scholarship
 - `/admin/scholarships/[id]/edit` - Edit/delete scholarship
+- `/admin/pending` - Pending scraped scholarships (approve/reject)
 
 ### IMPORTANT: NextAuth Edge Runtime Issues
 

@@ -75,6 +75,33 @@ npm start
 - `POST /api/admin/scholarships` - Create scholarship (admin)
 - `PUT /api/admin/scholarships/[id]` - Update scholarship (admin)
 - `DELETE /api/admin/scholarships/[id]` - Delete scholarship (admin)
+- `POST /api/admin/scrape` - Fetch scholarships from government portals (admin)
+- `GET /api/admin/pending` - List pending scraped scholarships (admin)
+- `POST /api/admin/pending/[id]/approve` - Approve pending scholarship (admin)
+- `POST /api/admin/pending/[id]/reject` - Reject pending scholarship (admin)
+- `POST /api/cron/scrape` - Cron endpoint for scheduled scraping
+
+## Auto-Fetch Feature
+
+The portal can automatically fetch scholarships from government portals (like scholarships.gov.in) and add them for admin review.
+
+### How it works
+1. Admin clicks "Fetch New Scholarships" in `/admin/pending`
+2. Scholarships are scraped and stored in a pending table
+3. Admin reviews and approves/rejects each scholarship
+4. Approved scholarships are added to the main listing
+
+### Scheduling (Vercel)
+For production, set up a cron job to trigger `/api/cron/scrape` daily:
+```json
+// vercel.json
+{
+  "crons": [{
+    "path": "/api/cron/scrape",
+    "schedule": "0 6 * * *"
+  }]
+}
+```
 
 ## Deployment
 
