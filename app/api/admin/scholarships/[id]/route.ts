@@ -29,8 +29,35 @@ export async function PUT(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const id = parseInt(params.id)
+  if (isNaN(id)) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
+  }
+
   const body = await request.json()
-  const scholarship = updateScholarship(parseInt(params.id), body)
+
+  // Basic validation for updated fields
+  const allowedFields = [
+    'name', 'provider', 'description', 'eligibility',
+    'amount', 'deadline', 'website', 'education_level'
+  ]
+
+  for (const [key, value] of Object.entries(body)) {
+    if (!allowedFields.includes(key)) {
+      return NextResponse.json(
+        { error: `Field '${key}' is not allowed` },
+        { status: 400 }
+      )
+    }
+    if (value !== undefined && value !== null && typeof value !== 'string') {
+      return NextResponse.json(
+        { error: `Field '${key}' must be a string` },
+        { status: 400 }
+      )
+    }
+  }
+
+  const scholarship = updateScholarship(id, body)
   if (!scholarship) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
@@ -46,7 +73,12 @@ export async function DELETE(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const deleted = deleteScholarship(parseInt(params.id))
+  const id = parseInt(params.id)
+  if (isNaN(id)) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
+  }
+
+  const deleted = deleteScholarship(id)
   if (!deleted) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
