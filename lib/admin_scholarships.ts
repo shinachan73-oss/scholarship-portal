@@ -31,9 +31,13 @@ export function updateScholarship(id: number, data: UpdateScholarshipInput): Sch
   const db = getDb()
   const fields: string[] = []
   const values: (string | number)[] = []
+  const allowedFields = [
+    'name', 'provider', 'description', 'eligibility',
+    'amount', 'deadline', 'website', 'education_level'
+  ]
 
   Object.entries(data).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
+    if (allowedFields.includes(key) && value !== undefined && value !== null) {
       fields.push(`${key} = ?`)
       values.push(value as string | number)
     }

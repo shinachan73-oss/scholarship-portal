@@ -22,6 +22,22 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json()
+
+  // Basic validation
+  const requiredFields = [
+    'name', 'provider', 'description', 'eligibility',
+    'amount', 'deadline', 'website', 'education_level'
+  ]
+
+  for (const field of requiredFields) {
+    if (!body[field] || typeof body[field] !== 'string') {
+      return NextResponse.json(
+        { error: `Field '${field}' is required and must be a string` },
+        { status: 400 }
+      )
+    }
+  }
+
   const scholarship = createScholarship(body)
   return NextResponse.json(scholarship, { status: 201 })
 }
